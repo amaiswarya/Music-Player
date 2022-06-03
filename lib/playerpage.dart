@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'musics.dart';
 
 class Player extends StatefulWidget //widget class
 {
-  const Player({Key? key, required this.music}) : super(key: key);
-  final Musics music;
+  const Player({Key? key, required this.music, required this.index})
+      : super(key: key);
+  final List music;
+  final int index;
   @override
   State<Player> createState() => _PlayerState();
 }
 
 class _PlayerState extends State<Player> // state class
 {
+  int idx = 0;
   bool isPlaying = false; //keep track whether the audio is playing
   final audioPlayer = AudioPlayer();
   Duration duration = Duration.zero; // to check the duration of audio
@@ -20,6 +22,9 @@ class _PlayerState extends State<Player> // state class
   @override
   //initState is lifecycle function which is called by default whenever the widget is loaded
   void initState() {
+    setState(() {
+      idx = widget.index;
+    });
     audioPlayer.onPlayerStateChanged.listen((audioState) {
       //whenever the audio is played or paused this event(audioState) happens and listen to that event
 
@@ -51,7 +56,7 @@ class _PlayerState extends State<Player> // state class
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.music.title,
+        title: Text(widget.music[idx].title,
             style: const TextStyle(fontSize: 30, color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 31, 31, 31),
       ),
@@ -69,7 +74,7 @@ class _PlayerState extends State<Player> // state class
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          widget.music.image,
+                          widget.music[idx].image,
                           fit: BoxFit.cover,
                         ))),
                 const SizedBox(height: 20),
@@ -83,31 +88,35 @@ class _PlayerState extends State<Player> // state class
                       await audioPlayer.seek(position);
                     }),
                 const SizedBox(height: 20),
-                Text(widget.music.title,
+                Text(widget.music[idx].title,
                     style: const TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.w500,
                         color: Colors.white)),
                 const SizedBox(height: 10),
-                Text(widget.music.singer,
+                Text(widget.music[idx].singer,
                     style: const TextStyle(
                         fontSize: 20,
                         //fontWeight: FontWeight.w500,
                         color: Colors.white60)),
                 const SizedBox(height: 20),
-                IconButton(
-                  onPressed: (() async {
-                    if (isPlaying == true) {
-                      await audioPlayer
-                          .pause(); //await is used in case where until and unless it start execution, this will not move ahead
-                    } else {
-                      await audioPlayer.play(widget.music.audio);
-                    }
-                  }),
-                  icon:
-                      Icon(isPlaying ? Icons.pause_circle : Icons.play_circle),
-                  iconSize: 70,
-                  color: Colors.red,
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: (() async {
+                        if (isPlaying == true) {
+                          await audioPlayer
+                              .pause(); //await is used in case where until and unless it start execution, this will not move ahead
+                        } else {
+                          await audioPlayer.play(widget.music[idx].audio);
+                        }
+                      }),
+                      icon: Icon(
+                          isPlaying ? Icons.pause_circle : Icons.play_circle),
+                      iconSize: 70,
+                      color: Colors.red,
+                    ),
+                  ],
                 )
               ])),
         )
