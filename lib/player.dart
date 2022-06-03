@@ -33,11 +33,12 @@ class _MusicState extends State<Music> {
             onPressed: () {},
           )
         ],
+        centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 39, 38, 38),
-        leading: const Icon(Icons.music_note, size: 45),
+        leading: const Icon(Icons.music_note, size: 35),
         title: const Text(
           "Music Player",
-          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
       ),
       body: Stack(

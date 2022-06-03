@@ -56,8 +56,14 @@ class _PlayerState extends State<Player> // state class
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.arrow_back_ios)),
+        centerTitle: true,
         title: Text(widget.music[idx].title,
-            style: const TextStyle(fontSize: 30, color: Colors.white)),
+            style: const TextStyle(fontSize: 24, color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 31, 31, 31),
       ),
       body: Stack(children: [
@@ -101,7 +107,24 @@ class _PlayerState extends State<Player> // state class
                         color: Colors.white60)),
                 const SizedBox(height: 20),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    IconButton(
+                      onPressed: (() async {
+                        setState(() {
+                          if (idx <= 0) {
+                            idx = widget.music.length - 1;
+                          } else {
+                            idx -= 1;
+                          }
+                        });
+
+                        await audioPlayer.play(widget.music[idx].audio);
+                      }),
+                      icon: const Icon(Icons.skip_previous),
+                      iconSize: 70,
+                      color: Colors.red,
+                    ),
                     IconButton(
                       onPressed: (() async {
                         if (isPlaying == true) {
@@ -113,6 +136,22 @@ class _PlayerState extends State<Player> // state class
                       }),
                       icon: Icon(
                           isPlaying ? Icons.pause_circle : Icons.play_circle),
+                      iconSize: 70,
+                      color: Colors.red,
+                    ),
+                    IconButton(
+                      onPressed: (() async {
+                        setState(() {
+                          if (idx < widget.music.length - 1) {
+                            idx += 1;
+                          } else {
+                            idx = 0;
+                          }
+                        });
+
+                        await audioPlayer.play(widget.music[idx].audio);
+                      }),
+                      icon: Icon(Icons.skip_next),
                       iconSize: 70,
                       color: Colors.red,
                     ),
