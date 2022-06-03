@@ -12,34 +12,108 @@ class Music extends StatefulWidget {
 }
 
 class _MusicState extends State<Music> {
-  late List musics; //creates a list of musics
+  late List musics;
+  late List musicList;
+  //creates a list of musics
   @override
   void initState() {
-    musics = getList();
+    musicList = getList();
+    musics = musicList;
     super.initState(); //parent init state
   }
 
+  TextEditingController searchController = TextEditingController();
+  search() {
+    musics = musicList;
+    List searchList = [];
+    for (int i = 0; i < musics.length; i++) {
+      if (musics[i]
+          .title
+          .toString()
+          .toLowerCase()
+          .contains(searchController.text.toLowerCase())) {
+        setState(() {
+          searchList.add(musics[i]);
+        });
+      }
+    }
+    setState(() {
+      musics = searchList;
+    });
+  }
+
+  bool isSearch = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leadingWidth: 35,
         actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {},
-          )
+          isSearch == false
+              ? Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {
+                      setState(() {
+                        isSearch = !isSearch;
+                      });
+                    },
+                  ),
+                )
+              : const SizedBox(),
         ],
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 39, 38, 38),
-        leading: const Icon(Icons.music_note, size: 35),
-        title: const Text(
-          "Music Player",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        leading: const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.music_note, size: 35),
         ),
+        title: isSearch == false
+            ? const Text(
+                "Music Player",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              )
+            : TextField(
+                onChanged: (value) {
+                  search();
+                },
+                textAlign: TextAlign.center,
+                keyboardType: TextInputType.text,
+                controller: searchController,
+                decoration: InputDecoration(
+                    hintText: 'Search music',
+                    hintStyle:
+                        const TextStyle(fontSize: 16, color: Colors.white),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: const BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isSearch = !isSearch;
+                          musics = musicList;
+                          searchController.clear();
+                        });
+                      },
+                      child: const Icon(
+                        Icons.close,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: Colors.white,
+                    ),
+                    filled: true,
+                    contentPadding: EdgeInsets.all(16),
+                    fillColor: Colors.white12),
+              ),
       ),
       body: Stack(
         children: [
@@ -74,7 +148,7 @@ class _MusicState extends State<Music> {
                                     fit: BoxFit.cover,
                                   )),
                             ),
-                            const SizedBox(width: 20),
+                            const SizedBox(width: 25),
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -82,7 +156,7 @@ class _MusicState extends State<Music> {
                                     musics[index].title,
                                     style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 20,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold),
                                   ),
                                   const SizedBox(
@@ -92,7 +166,7 @@ class _MusicState extends State<Music> {
                                     musics[index].singer,
                                     style: const TextStyle(
                                       color: Colors.grey,
-                                      fontSize: 18,
+                                      fontSize: 15,
                                     ),
                                   )
                                 ]),

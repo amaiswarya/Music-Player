@@ -96,13 +96,13 @@ class _PlayerState extends State<Player> // state class
                 const SizedBox(height: 20),
                 Text(widget.music[idx].title,
                     style: const TextStyle(
-                        fontSize: 30,
+                        fontSize: 24,
                         fontWeight: FontWeight.w500,
                         color: Colors.white)),
                 const SizedBox(height: 10),
                 Text(widget.music[idx].singer,
                     style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         //fontWeight: FontWeight.w500,
                         color: Colors.white60)),
                 const SizedBox(height: 20),
